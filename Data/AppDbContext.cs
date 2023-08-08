@@ -8,7 +8,11 @@ public class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Contact> Contacts { get; set; }
-
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Document> Documents { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<ProductMedium> ProductMedia { get; set; }
+    public DbSet<Tovar> Tovars { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
