@@ -35,7 +35,7 @@ public class AppDbContext : DbContext, IAppDbContext
             .HasOne(u => u.Contact)
             .WithOne(c => c.User)
             .HasPrincipalKey<User>(u => u.Id)
-            .HasForeignKey<Contact>(c => c.Id);
+            .HasForeignKey<Contact>(c => c.UserId);
 
         modelBuilder.Entity<Contact>()
             .HasKey(u => u.Id);
