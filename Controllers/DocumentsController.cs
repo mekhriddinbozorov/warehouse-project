@@ -18,15 +18,15 @@ public class DocumentsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDto createDocument)
+    public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDto createDocumentDto)
     {
         var document = dbContext.Documents.Add(new Document
         {
             Id = new Guid(),
-            Name = createDocument.Name,
-            Date = createDocument.Date,
-            Provider = createDocument.Provider,
-            CategoryId = createDocument.CategoryId
+            Name = createDocumentDto.Name,
+            Date = createDocumentDto.Date,
+            Provider = createDocumentDto.Provider,
+            CategoryId = createDocumentDto.CategoryId
         });
 
         await dbContext.SaveChangesAsync();
