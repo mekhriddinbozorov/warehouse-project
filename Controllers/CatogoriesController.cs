@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using warehouse_project.Data;
 using warehouse_project.Dtos.CategoryDto;
+using warehouse_project.Entities;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -18,7 +19,7 @@ public class CategoriesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto categoryDto)
     {
-        var create = dbContext.Categories.Add(new Entities.Category
+        var create = dbContext.Categories.Add(new Category
         {
             Id = new Guid(),
             Name = categoryDto.Name
