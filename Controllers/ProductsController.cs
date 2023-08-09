@@ -8,7 +8,7 @@ namespace warehouse_project.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductsController : ControllerBase
+public partial class ProductsController : ControllerBase
 {
     private readonly IAppDbContext dbContext;
 
