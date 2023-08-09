@@ -12,5 +12,5 @@ public class Document : IHasTime, IActive
     
     public virtual Guid CategoryId { get; set; }
     public virtual Category Category { get; set; }
-    public virtual List<Product> Products { get; set; }
+    public virtual ICollection<Product> Products { get; set; }
 }

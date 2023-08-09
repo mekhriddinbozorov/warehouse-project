@@ -7,6 +7,6 @@ public class Category : IHasTime, IActive
     public DateTime ModifiedAt { get; set; }
     public bool IsActive { get; set; }
     
-    public virtual List<Tovar> Tovars { get; set; }
-    public virtual List<Document> Documents { get; set; }
+    public virtual ICollection<Tovar> Tovars { get; set; }
+    public virtual ICollection<Document> Documents { get; set; }
 }

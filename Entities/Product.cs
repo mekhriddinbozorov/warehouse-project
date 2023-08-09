@@ -12,5 +12,5 @@ public class Product : IHasTime, IActive
     public virtual Document Document { get; set; }
     public virtual Guid TovarId { get; set; }
     public virtual Tovar Tovar { get; set; }
-    public virtual List<ProductMedium> ProductMedia { get; set; }
+    public virtual ICollection<ProductMedium> ProductMedia { get; set; }
 }
