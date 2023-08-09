@@ -10,7 +10,7 @@ public partial class ProductsController : ControllerBase
     [HttpPost("{id}/media")]
     public async Task<IActionResult> CreateProductMedia(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var product = await dbContext.Products
             .Where(a => a.Id == id && a.IsActive)
@@ -45,7 +45,7 @@ public partial class ProductsController : ControllerBase
                 Filename = file.Name,
                 Extension = fileExtension,
                 Order = product.ProductMedia.Count + 1,
-                Data = await GetFileData(file)
+                Data = await GetFileData(file, cancellationToken)
             });
         }
 
@@ -85,7 +85,7 @@ public partial class ProductsController : ControllerBase
     public async Task<IActionResult> DownloadProductMedium(
         [FromRoute] Guid productId,
         [FromRoute] Guid mediumId,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var product = await dbContext.Products
             .Where(a => a.Id == productId && a.IsActive)
@@ -108,7 +108,7 @@ public partial class ProductsController : ControllerBase
     public async Task<IActionResult> DeleteMedium(
         [FromRoute] Guid productId,
         [FromRoute] Guid mediumId,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var product = await dbContext.Products
             .Where(a => a.Id == productId && a.IsActive)
@@ -130,10 +130,10 @@ public partial class ProductsController : ControllerBase
         return Ok();
     }
 
-    private async Task<byte[]> GetFileData(IFormFile formFile)
+    private async Task<byte[]> GetFileData(IFormFile formFile, CancellationToken cancellationToken = default)
     {
         using var memoryStream = new MemoryStream();
-        await formFile.CopyToAsync(memoryStream);
+        await formFile.CopyToAsync(memoryStream, cancellationToken);
         return memoryStream.ToArray();
     }
 
