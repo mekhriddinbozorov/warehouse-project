@@ -1,10 +1,13 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using warehouse_project.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 builder.Services.AddScoped<IAppDbContext, AppDbContext>();
 
 // builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
