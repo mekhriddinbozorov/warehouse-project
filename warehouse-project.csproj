@@ -13,6 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NpgSql.EntityFrameworkCore.PostgreSql" Version="7.0.4" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="telegram.bot" Version="19.0.0" />
   </ItemGroup>
