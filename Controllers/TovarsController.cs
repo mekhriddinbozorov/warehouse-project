@@ -18,7 +18,9 @@ public class TovarsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateTovar([FromBody] CreateTovarDto tovarDto)
+    public async Task<IActionResult> CreateTovar(
+        [FromBody] CreateTovarDto tovarDto,
+        CancellationToken cancellationToken)
     {
         var tovar = dbContext.Tovars.Add(new Tovar
         {
@@ -28,17 +30,17 @@ public class TovarsController : ControllerBase
             Price = tovarDto.Price,
             CategoryId = tovarDto.CategoryId
         });
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return CreatedAtAction(nameof(GetTovar), new { id = tovar.Entity.Id }, new GetTovarDto(tovar.Entity));
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetTovars()
+    public async Task<IActionResult> GetTovars(CancellationToken cancellationToken)
     {
         var tovars = await dbContext.Tovars
             .AsNoTracking()
-            .Where(c => c.IsActive).ToListAsync();
+            .Where(c => c.IsActive).ToListAsync(cancellationToken);
 
         if (tovars is null)
             return NotFound();
@@ -47,11 +49,13 @@ public class TovarsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetTovar([FromRoute] Guid id)
+    public async Task<IActionResult> GetTovar(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
         var tovar = await dbContext.Tovars
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.IsActive && c.Id == id);
+            .FirstOrDefaultAsync(c => c.IsActive && c.Id == id, cancellationToken);
 
         if (tovar is null)
             return NotFound();
@@ -60,28 +64,38 @@ public class TovarsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTovar([FromRoute] Guid id, [FromBody] UpdateTovar tovarDto)
+    public async Task<IActionResult> UpdateTovar(
+        [FromRoute] Guid id,
+        [FromBody] UpdateTovar tovarDto,
+        CancellationToken cancellationToken)
     {
-        var tovar = await dbContext.Tovars.FirstOrDefaultAsync(c => c.Id == id && c.IsActive);
+        var tovar = await dbContext.Tovars.FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
         if (tovar is null)
             return NotFound();
+
         tovar.Number = tovarDto.Number;
         tovar.NameTovar = tovarDto.NameTovar;
         tovar.Price = tovarDto.Price;
         tovar.CategoryId = tovarDto.CategoryId;
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         return Ok(tovar.Id);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTovar([FromRoute] Guid id)
+    public async Task<IActionResult> DeleteTovar(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
-        var tovar = await dbContext.Tovars.FirstOrDefaultAsync(c => c.Id == id && c.IsActive);
+        var tovar = await dbContext.Tovars
+            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
+
         if (tovar is null)
             return NotFound();
+
         tovar.IsActive = false;
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
+
         return Ok(tovar.Id);
     }
 }
