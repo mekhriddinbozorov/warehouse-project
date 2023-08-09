@@ -17,7 +17,9 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto categoryDto)
+    public async Task<IActionResult> CreateCategory(
+        [FromBody] CreateCategoryDto categoryDto,
+        CancellationToken cancellationToken)
     {
         var create = dbContext.Categories.Add(new Category
         {
@@ -25,17 +27,18 @@ public class CategoriesController : ControllerBase
             Name = categoryDto.Name
         });
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
+        
         return CreatedAtAction(nameof(GetCategory), new { id = create.Entity.Id }, new GetCategoryDto(create.Entity));
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCategories()
+    public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
     {
         var categories = await dbContext.Categories
             .AsNoTracking()
             .Where(c => c.IsActive)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (categories is null)
             return NotFound();
@@ -44,11 +47,13 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetCategory([FromRoute] Guid id)
+    public async Task<IActionResult> GetCategory(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
         var category = await dbContext.Categories
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.IsActive && c.Id == id);
+            .FirstOrDefaultAsync(c => c.IsActive && c.Id == id, cancellationToken);
         if (category is null)
             return NotFound();
 
@@ -58,31 +63,34 @@ public class CategoriesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(
         [FromRoute] Guid id,
-        [FromBody] UpdateCategoryDto categoryDto)
+        [FromBody] UpdateCategoryDto categoryDto,
+        CancellationToken cancellationToken)
     {
         var category = await dbContext.Categories
-            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive);
+            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
 
         if (category is null)
             return NotFound();
 
         category.Name = categoryDto.Name;
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Ok(category.Id);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
+    public async Task<IActionResult> DeleteCategory(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
         var category = await dbContext.Categories
-            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive);
+            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
 
         if (category is null)
             return NotFound();
 
         category.IsActive = false;
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Ok(category.Id);
     }

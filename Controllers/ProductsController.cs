@@ -18,7 +18,9 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateDocument([FromBody] CreateProductDto createProductDto)
+    public async Task<IActionResult> CreateDocument(
+        [FromBody] CreateProductDto createProductDto,
+        CancellationToken cancellationToken)
     {
         var product = dbContext.Products.Add(new Product
         {
@@ -28,17 +30,17 @@ public class ProductsController : ControllerBase
             TovarId = createProductDto.TovarId
         });
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         return CreatedAtAction(nameof(GetProduct), new { id = product.Entity.Id }, new GetProductDto(product.Entity));
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetProducts()
+    public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)
     {
         var product = await dbContext.Products
             .AsNoTracking()
             .Where(c => c.IsActive)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (product is null)
             return NotFound();
@@ -47,11 +49,13 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetProduct([FromRoute] Guid id)
+    public async Task<IActionResult> GetProduct(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
         var product = await dbContext.Products
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.IsActive && c.Id == id);
+            .FirstOrDefaultAsync(c => c.IsActive && c.Id == id, cancellationToken);
         if (product is null)
             return NotFound();
 
@@ -61,10 +65,11 @@ public class ProductsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(
         [FromRoute] Guid id,
-        [FromBody] UpdateProductDto updateProductDto)
+        [FromBody] UpdateProductDto updateProductDto,
+        CancellationToken cancellationToken)
     {
         var product = await dbContext.Products
-            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive);
+            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
 
         if (product is null)
             return NotFound();
@@ -73,22 +78,24 @@ public class ProductsController : ControllerBase
         product.DocumentId = updateProductDto.DocumentId;
         product.TovarId = updateProductDto.TovarId;
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Ok(product.Id);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
+    public async Task<IActionResult> DeleteProduct(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
         var product = await dbContext.Products
-            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive);
+            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
 
         if (product is null)
             return NotFound();
 
         product.IsActive = false;
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Ok(product.Id);
     }

@@ -18,7 +18,9 @@ public class DocumentsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDto createDocumentDto)
+    public async Task<IActionResult> CreateDocument(
+        [FromBody] CreateDocumentDto createDocumentDto,
+        CancellationToken cancellationToken)
     {
         var document = dbContext.Documents.Add(new Document
         {
@@ -29,17 +31,17 @@ public class DocumentsController : ControllerBase
             CategoryId = createDocumentDto.CategoryId
         });
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         return CreatedAtAction(nameof(GetDocument), new { id = document.Entity.Id }, new GetDocumentDto(document.Entity));
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetDocuments()
+    public async Task<IActionResult> GetDocuments(CancellationToken cancellationToken)
     {
         var documents = await dbContext.Documents
             .AsNoTracking()
             .Where(c => c.IsActive)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         if (documents is null)
             return NotFound();
@@ -48,11 +50,13 @@ public class DocumentsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetDocument([FromRoute] Guid id)
+    public async Task<IActionResult> GetDocument(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
         var document = await dbContext.Documents
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.IsActive && c.Id == id);
+            .FirstOrDefaultAsync(c => c.IsActive && c.Id == id, cancellationToken);
         if (document is null)
             return NotFound();
 
@@ -62,10 +66,11 @@ public class DocumentsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(
         [FromRoute] Guid id,
-        [FromBody] UpdateDocumentDto updateDocument)
+        [FromBody] UpdateDocumentDto updateDocument,
+        CancellationToken cancellationToken)
     {
         var document = await dbContext.Documents
-            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive);
+            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
 
         if (document is null)
             return NotFound();
@@ -75,22 +80,24 @@ public class DocumentsController : ControllerBase
         document.Provider = updateDocument.Provider;
         document.CategoryId = updateDocument.CategoryId;
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Ok(document.Id);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTovar([FromRoute] Guid id)
+    public async Task<IActionResult> DeleteTovar(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
         var document = await dbContext.Documents
-            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive);
+            .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
 
         if (document is null)
             return NotFound();
 
         document.IsActive = false;
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return Ok(document.Id);
     }
