@@ -19,7 +19,7 @@ public class CategoriesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateCategory(
         [FromBody] CreateCategoryDto categoryDto,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var create = dbContext.Categories.Add(new Category
         {
@@ -33,7 +33,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCategories(CancellationToken cancellationToken = default)
     {
         var categories = await dbContext.Categories
             .AsNoTracking()
@@ -49,7 +49,7 @@ public class CategoriesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCategory(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var category = await dbContext.Categories
             .AsNoTracking()
@@ -64,7 +64,7 @@ public class CategoriesController : ControllerBase
     public async Task<IActionResult> UpdateCategory(
         [FromRoute] Guid id,
         [FromBody] UpdateCategoryDto categoryDto,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var category = await dbContext.Categories
             .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
@@ -81,7 +81,7 @@ public class CategoriesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategory(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var category = await dbContext.Categories
             .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);

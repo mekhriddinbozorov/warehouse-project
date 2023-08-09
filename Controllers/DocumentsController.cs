@@ -20,7 +20,7 @@ public class DocumentsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateDocument(
         [FromBody] CreateDocumentDto createDocumentDto,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var document = dbContext.Documents.Add(new Document
         {
@@ -36,7 +36,7 @@ public class DocumentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetDocuments(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetDocuments(CancellationToken cancellationToken = default)
     {
         var documents = await dbContext.Documents
             .AsNoTracking()
@@ -52,7 +52,7 @@ public class DocumentsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDocument(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var document = await dbContext.Documents
             .AsNoTracking()
@@ -67,7 +67,7 @@ public class DocumentsController : ControllerBase
     public async Task<IActionResult> UpdateCategory(
         [FromRoute] Guid id,
         [FromBody] UpdateDocumentDto updateDocument,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var document = await dbContext.Documents
             .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
@@ -88,7 +88,7 @@ public class DocumentsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTovar(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var document = await dbContext.Documents
             .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);

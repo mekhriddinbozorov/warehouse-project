@@ -20,7 +20,7 @@ public class TovarsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateTovar(
         [FromBody] CreateTovarDto tovarDto,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var tovar = dbContext.Tovars.Add(new Tovar
         {
@@ -36,7 +36,7 @@ public class TovarsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetTovars(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetTovars(CancellationToken cancellationToken = default)
     {
         var tovars = await dbContext.Tovars
             .AsNoTracking()
@@ -51,7 +51,7 @@ public class TovarsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTovar(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var tovar = await dbContext.Tovars
             .AsNoTracking()
@@ -67,7 +67,7 @@ public class TovarsController : ControllerBase
     public async Task<IActionResult> UpdateTovar(
         [FromRoute] Guid id,
         [FromBody] UpdateTovar tovarDto,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var tovar = await dbContext.Tovars.FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
         if (tovar is null)
@@ -85,7 +85,7 @@ public class TovarsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTovar(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var tovar = await dbContext.Tovars
             .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);

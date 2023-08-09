@@ -20,7 +20,7 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateDocument(
         [FromBody] CreateProductDto createProductDto,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var product = dbContext.Products.Add(new Product
         {
@@ -35,7 +35,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProducts(CancellationToken cancellationToken = default)
     {
         var product = await dbContext.Products
             .AsNoTracking()
@@ -51,7 +51,7 @@ public class ProductsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProduct(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var product = await dbContext.Products
             .AsNoTracking()
@@ -66,7 +66,7 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> UpdateProduct(
         [FromRoute] Guid id,
         [FromBody] UpdateProductDto updateProductDto,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var product = await dbContext.Products
             .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
@@ -86,7 +86,7 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var product = await dbContext.Products
             .FirstOrDefaultAsync(c => c.Id == id && c.IsActive, cancellationToken);
