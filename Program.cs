@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using warehouse_project.Data;
+using warehouse_project.Dtos.CategoryDto;
 using warehouse_project.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,8 +23,9 @@ builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
+builder.Services.AddHostedService<BotBackgroundService>();
 builder.Services.AddTransient<IUpdateHandler, UpdateHandler>();
-builder.Services.AddScoped<ITelegramBotClient, TelegramBotClient>(provider =>
+builder.Services.AddSingleton<ITelegramBotClient, TelegramBotClient>(provider =>
     new TelegramBotClient(builder.Configuration.GetValue("BotApiKey", string.Empty)));
 
 var app = builder.Build();
